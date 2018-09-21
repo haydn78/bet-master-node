@@ -1,0 +1,15 @@
+{
+  "name": "bet-master-node",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "start": "node app.js"
+  },
+  "dependencies": {
+    "express": "3.2.6",
+    "jade": "*",
+    "mongodb": "^2.2.33",
+    "body-parser": "*",
+    "cors": "*"
+  }
+}
