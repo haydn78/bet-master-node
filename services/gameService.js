@@ -145,7 +145,7 @@ class GameService{
 	}
 
 
-	updateGame(){
+	replaceGame(){
 		let self = this;
 		let game = this.req.body.game;
 		try{
@@ -172,6 +172,34 @@ class GameService{
 		
 	}
 
+	
+	updateGame(){
+		let self = this;
+		let game = this.req.body.game;
+		try{
+			MongoClient.connect(url,function(err, db) {
+				assert.equal(null, err);
+				var newvalues = { $set: {"game.active" : game.active } };
+		        db.collection(collectionName).updateOne( {$and: [ {"game.name" : game.name }, {"game.id" :game.id}]} ,newvalues, function(err, result) {
+					 if (err) throw err;
+					 db.close();
+					 return self.res.status(200).json({
+							status: 'success'
+						});
+
+				 });
+				
+			});
+			}
+		catch(err){
+			return self.res.status(500).json({
+				status: 'error',
+				error: err
+			})
+		}
+		
+	}
+	
 
 	
 	removeAll(){
