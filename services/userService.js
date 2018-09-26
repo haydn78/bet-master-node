@@ -180,8 +180,7 @@ class UserService{
 					 if (err) throw err;
 					 db.close();
 					 return self.res.status(200).json({
-							status: 'success',
-							data: userStruct
+							status: 'success'
 						});
 
 				 });
