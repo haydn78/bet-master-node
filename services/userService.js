@@ -272,6 +272,7 @@ class UserService{
 				 	for(let j=0;j<tmpUserbets.length;j++)	{
 						if (tmpUserbets[j].id == query.betid) {
 							tmpUsr.user.points += (tmpUsr.user.UserBets[j].amount * tmpUsr.user.UserBets[j].odds);
+							tmpUsr.user.UserBets[j].active = false;
 							console.log("userservice:payUser:userpoints:after"+tmpUsr.user.points);
 						}
 					}
@@ -300,6 +301,50 @@ class UserService{
 
    
 	
+	clearUsersBets(){
+		console.log("userservice:clearUser:start");
+		let self = this;
+		var url_parts = urlr.parse(this.req.url, true);
+		var query = url_parts.query;
+       console.log("userservice:clearUser:query:"+query.betid);
+    	
+        let filters = [{"user.UserBets.id": query.betid }];
+		let userList = []; 
+		this.findUsersCommon(filters,function(userList){
+				console.log("userservice:clearUser:foundusers:"+userList.length);
+				for(let i=0;i<userList.length;i++)	{	
+					let tmpUsr = userList[i];
+					console.log("userservice:clearUser:userpoints:find:points:"+tmpUsr.user.points+":Bets:"+tmpUsr.user.UserBets.length);
+					let tmpUserbets = tmpUsr.user.UserBets;
+				 	for(let j=0;j<tmpUserbets.length;j++)	{
+						if (tmpUserbets[j].id == query.betid) {
+							tmpUsr.user.UserBets[j].active = false;
+							console.log("userservice:clearUser:userpoints:after"+tmpUsr.user.points);
+						}
+					}
+			
+					try{
+						MongoClient.connect(url,function(err, db) {
+							assert.equal(null, err);
+					        db.collection('users').replaceOne( {$and: [ {"user.name" : tmpUsr.user.name }, {"user.email" :tmpUsr.user.email}]} ,tmpUsr,  { upsert: true }, function(err, result) {
+								 if (err) throw err;
+								 db.close();
+					         
+							 });
+							
+						});
+						}
+					catch(err){
+						console.log(err);
+						return self.res.status(500);
+					}
+					 	
+				 }
+				 return self.res.status(200);
+			 });	
+	
+	}
+
 	
 
 	

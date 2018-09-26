@@ -173,14 +173,20 @@ class GameService{
 	}
 
 	
-	updateGame(){
+	disableGame(){
 		let self = this;
-		let game = this.req.body.game;
+		var url_parts = urlr.parse(this.req.url, true);
+		console.log(this.req);
+        
+		var query = url_parts.query;
+        console.log(query.id);
+        console.log(query.active);
+        
 		try{
 			MongoClient.connect(url,function(err, db) {
 				assert.equal(null, err);
-				var newvalues = { $set: {"game.active" : game.active } };
-		        db.collection(collectionName).updateOne( {$and: [ {"game.name" : game.name }, {"game.id" :game.id}]} ,newvalues, function(err, result) {
+				var newvalues = { $set: {"game.active" : query.active } };
+		        db.collection(collectionName).updateOne( {$and: [ {"game.id" :query.id}]} ,newvalues, function(err, result) {
 					 if (err) throw err;
 					 db.close();
 					 return self.res.status(200).json({
@@ -200,7 +206,7 @@ class GameService{
 		
 	}
 	
-
+	
 	
 	removeAll(){
 		let self = this;

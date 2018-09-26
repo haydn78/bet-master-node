@@ -3,6 +3,7 @@
  * Module dependencies.
  */
 
+
 var express = require('express')
   , routes = require('./routes')
   , http = require('http')
@@ -94,6 +95,11 @@ app.get('/users/payUsers', cors(), function(req, res, next) {
 	  userServiceObj.payUserBet();
 	});
 
+app.get('/users/clearUserBet', cors(), function(req, res, next) {
+	  let userServiceObj = new userService(req, res)
+	  userServiceObj.clearUsersBets();
+	});
+
 /*** game apis **/
 
 app.get('/games/getGames', cors(),function(req, res, next) {
@@ -133,6 +139,10 @@ app.post('/games/deleteGame', cors(),function(req, res, next) {
 	});  
 
 
+app.get('/games/disableGame', cors(),function(req, res, next) {
+	  let serviceObj = new gameService(req, res);
+	  serviceObj.disableGame();
+	});
 
 http.createServer(app).listen(app.get('port'), function(){
 console.log('Express server listening on port ' + app.get('port'));
